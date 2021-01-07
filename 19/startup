@@ -1,0 +1,8 @@
+while true do
+sleep(0.1)
+ if rs.getInput("front") then
+   rs.setOutput("left", false)
+ else
+   rs.setOutput("left", true)
+   end
+end

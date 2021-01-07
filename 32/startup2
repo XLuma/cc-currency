@@ -1,0 +1,15 @@
+rednet.open("back")
+function Main()
+sleep(0.1)
+	a, b = rednet.receive("$$Stock2")
+	print("1")
+	print(b)
+		if b == "$$Buy" then
+			print("2")
+				rs.setOutput("bottom",false)
+					sleep(0.1)
+						rs.setOutput("bottom",true)
+		end
+Main()
+end
+Main()

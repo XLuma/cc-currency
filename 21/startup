@@ -1,0 +1,157 @@
+-- server
+rednet.open("back")
+shell.run("bg test")
+function main()
+	a,b=rednet.receive("$$eco")	
+		if b == "$$deposit" then 
+			rednet.send(a,true,"$$eco")
+			local id, Lname=rednet.receive("$$eco",1)
+			local id, Lamount=rednet.receive("$$eco",1)
+			if not fs.exists("f/users/"..Lname) then
+				rednet.send(tonumber(id),"$$invFile","$$eco")
+			else
+				local new = fs.open("f/users/"..Lname,"r")
+				local Fsend = new.readAll
+				new.close()
+				local newAmmt = tonumber(Fsend)+Lamount
+				local new = fs.open("f/users/"..Lname,"w")
+				new.write(newAmmt)
+				new.close()
+				rednet.send(tonumber(id),"$$success","$$eco")
+		end	
+		elseif b == "$$register" then
+			rednet.send(a,true,"$$eco")
+			local id, Lname = rednet.receive("$$eco",1)
+			local id, Lpass = rednet.receive("$$eco",1)
+			if fs.exists("users/"..Lname) then 
+				print(fs.exists("users/"..Lname))
+				rednet.send(tonumber(id),"$$userExists","$$eco")
+			else
+				shell.run("copy tmp users/"..Lname)
+				local new = fs.open("users/"..Lname,"w")
+				new.write(Lpass)
+				new.close()
+				shell.run("copy tmp f/users/"..Lname)
+				local new = fs.open("f/users/"..Lname,"w")
+				new.write(0)
+				new.close()
+				rednet.send(tonumber(id),"$$success","$$eco")
+		end
+		elseif b == "$$getAmount" then
+			rednet.send(a,"true","$$eco")
+			local id, Lname = rednet.receive("$$eco",1)
+			if not fs.exists("f/users/"..Lname) then
+				rednet.send(a,"$$invUser","$$eco")
+			else
+					new = fs.open("f/users/"..Lname,"r")
+					amounT = tostring(new.readAll())
+					new.close()
+					amt = tonumber(amounT)
+					rednet.broadcast(amt,"hm")
+					print(tonumber(id))
+					print(amt)
+					sleep(1)
+				end
+		elseif b == "$$checkCode" then
+			rednet.send(a,true,"$$eco")
+			local id, CheckCode = rednet.receive("$$eco",1)
+				if not fs.exists("code/"..CheckCode) then
+					rednet.send(tonumber(id),"$$falseDisk","$$eco")
+				else
+					rednet.send(tonumber(id),"$$trueDisk","$$eco")
+				end
+		elseif b == "$$sendMoney" then
+			rednet.send(a,true,"$$eco")
+			local id, UserName = rednet.receive("$$eco",1)
+				if fs.exists("f/users/"..UserName) then
+					rednet.send(tonumber(id),"$$transferDone","$$eco")
+					local id, DelCode = rednet.receive("$$eco",1)
+						if fs.exists("code/"..DelCode) then
+							shell.run("delete code/"..DelCode)
+							rednet.send(tonumber(id),"$$codeGone","$$eco")
+							AddMoney = fs.open("f/users/"..UserName,'r')
+								local Add1 = AddMoney.readAll()
+								AddMoney.close()
+								Add1 = Add1 + 100
+								AddMoney2 = fs.open("f/users/"..UserName,'w')
+									AddMoney2.write(Add1)
+									AddMoney2.close()
+						end
+				else
+					rednet.send(tonumber(id),"$$transferFail","$$eco")
+				end
+				
+		elseif b == "$$buyStuff" then
+			rednet.send(a,"true","$$eco")
+			local id, UserName = rednet.receive("$$eco",1)
+			print("BuyStuff")
+				if fs.exists("f/users/"..UserName) then
+				sleep(0.1)
+					rednet.send(tonumber(id),"$$transferDone","$$eco")
+					print("Transfer Done")
+					sleep(0.1)
+					local id, Price = rednet.receive()
+					sleep(0.1)
+					TakeMoney = fs.open("f/users/"..UserName,'r')
+					sleep(0.1)
+								local Take1 = tonumber(TakeMoney.readAll())
+								TakeMoney.close()
+								sleep(0.1)
+								print("MoneyTaken1")
+								sleep(0.1)
+								print(Take1)
+								sleep(0.1)
+								print(Price)
+								sleep(0.1)
+								PriceT = tonumber(Price)
+								sleep(0.1)
+									if PriceT <= Take1 then
+									sleep(0.1)
+										Take1 = Take1 - PriceT
+										sleep(0.1)
+										print("MoneyTake2")
+										sleep(0.1)
+										TakeMoney2 = fs.open("f/users/"..UserName,'w')
+										sleep(0.1)
+											print("open")
+											sleep(0.1)
+											TakeMoney2.write(tonumber(Take1))
+											sleep(0.1)
+											print("write")
+											sleep(0.1)
+											TakeMoney2.close()
+											sleep(0.1)
+											rednet.send(tonumber(id),"$$transferDone2","$$eco")
+											print("Done")
+											sleep(0.1)
+									else
+										rednet.send(tonumber(id),"$$transferFail2","$$eco")
+									sleep(0.1)
+									end
+						sleep(0.1)
+				else
+					rednet.send(tonumber(id),"$$transferFail","$$eco")
+				end
+			sleep(0.1)	
+		elseif b == "$$newCode" then
+			rednet.send(a,true,"$$eco")	
+			print("1")
+			local id, Code = rednet.receive("$$eco",1)
+			print("2")
+			if fs.exists("code/"..Code) then
+			print("3")
+				rednet.send(tonumber(id),"$$exists","$$eco")
+				print("4")
+			else
+			print("5")
+				rednet.send(tonumber(id),"$$true","$$eco")
+				print("6")
+				shell.run("copy tmp code/"..Code)
+				print("7")
+		end
+		sleep(0.1)
+	end
+	main()
+	sleep(0.1)
+end
+main()

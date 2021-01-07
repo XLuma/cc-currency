@@ -1,0 +1,10 @@
+while true do
+sleep(0.1)
+rs.setOutput("right", true)
+  Check1 = rs.getInput("left")
+    if Check1 then
+      rs.setOutput("right", false)
+      print("K")
+       sleep(1/4)
+    end
+end

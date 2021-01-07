@@ -1,0 +1,34 @@
+rednet.open("back")
+function main()
+a,b=rednet.receive("$$eco")
+		if b == "$$login" then
+			rednet.send(a,true,"$$eco")
+			local id, Lname = rednet.receive("$$eco",1)
+			if not fs.exists("users/"..Lname) then 
+				rednet.send(tonumber(id),"$$invUser","$$eco")
+			else 
+				rednet.send(tonumber(id),"$$getPass","$$eco")
+				local id, Lpass = rednet.receive("$$eco",1)
+				user = fs.open("users/"..Lname,"r")
+				local uFile = user.readAll()
+				user.close()
+					if Lpass == uFile then
+						rednet.send(tonumber(id),"$$loginSuccess","$$eco")
+							local new = fs.open("f/users/"..Lname,'r')
+						print("check")
+							GetMoney = tostring(new.readAll())
+								new.close()
+								print("sending")
+								rednet.broadcast(GetMoney)
+								print("sent")
+							--rednet.send(tonumber(id),GetMoney,"$$HM")
+							sleep(1)	
+					else
+						rednet.send(tonumber(id),"$$invPass","$$eco")
+					sleep(0.1)
+			end
+		end
+	end
+	main()
+end
+main()

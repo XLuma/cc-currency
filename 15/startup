@@ -1,0 +1,11 @@
+rednet.open("top")
+while true do
+sleep(0.1)
+rs.setOutput("left", true)
+  local a,b = rednet.receive("$$ecoMach1")
+    if b == "go" then
+      rs.setOutput("left", false)
+      print("K")
+       sleep(1/3.335)
+    end
+end

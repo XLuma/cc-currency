@@ -1,0 +1,446 @@
+rednet.open("back")
+User = nil
+function main()
+term.clear()
+  ScreenW,ScreenH = term.getSize()
+  UserName = ""
+  Password = ""
+  NewUserName = ""
+  NewPassword = ""
+  term.setBackgroundColor(colors.gray)
+  print("***************************************************")
+  print("*                                                 *")
+  print("*               Welcome to the ATM                *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                   |Register|                    *")
+  print("*                    |Log in|                     *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*           |U.I. Designed by Nickireda|          *")
+  print("***************************************************")
+    local event, MainButton, x, y = os.pullEvent("mouse_click")
+      if x >= 21 and x <= 30 and y == 7 then
+        Register()
+      elseif x >= 22 and x <= 29 and y == 8 then
+        Login()
+      else
+        main()
+      end
+end
+
+function Register()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                 Create an Account               *")
+  print("*            UserName:                |           *")
+  print("*               (Max 16 Characters)               *")
+  print("*              |Type /exit to leave|              *")
+  print("***************************************************")
+	term.setCursorPos(23,3)
+	NewUserName = read()
+	if NewUserName == "/exit" then
+		main()
+	elseif string.len(NewUserName) > 16 then
+		term.clear()
+		term.setCursorPos(1,1)
+			print("***************************************************")
+			print("*                	    !Error!                     *")
+			print("*                UserName must have               *")
+			print("*             less than 16 characters!            *")
+			print("***************************************************")
+				sleep(3)
+				 Register()
+	else
+		PasswordReg()
+	end
+end
+
+function PasswordReg()
+	term.clear()
+	term.setCursorPos(1,1)
+		print("***************************************************")
+		print("*                 Create an Account               *")
+		print("*            Password:                |           *")
+		print("*               (Max 16 Characters)               *")
+		print("*              |Type /exit to leave|              *")
+		print("***************************************************")
+			term.setCursorPos(23,3)
+			NewPassword = read("*")
+				if NewPassword == "/exit" then
+					main()
+				elseif string.len(NewPassword) > 16 then
+					term.clear()
+					term.setCursorPos(1,1)
+						print("***************************************************")
+						print("*                	    !Error!                     *")
+						print("*                UserName must have               *")
+						print("*             less than 16 characters!            *")
+						print("***************************************************")
+							sleep(3)
+								PasswordReg()
+				else
+					RegisterComplete()
+				end
+end
+
+function RegisterComplete()
+term.clear()
+term.setCursorPos(1,1)
+		print("***************************************************")
+		print("*                 Congratulations!                *")
+		print("*            You have finished creating           *")
+		print("*                your new account!                *")
+		print("***************************************************")
+			rednet.send(21,"$$register","$$eco")
+			local a,b = rednet.receive("$$eco",1)
+				if b ~= true then
+				 ConnectError()
+				end
+					rednet.send(21,NewUserName,"$$eco")
+							rednet.send(21,NewPassword,"$$eco")
+								local a,b = rednet.receive("$$eco",1)
+									if b == "$$userExists" then
+										UserNameError()
+									end
+										sleep(3)
+											main()
+end
+
+function ConnectError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                	    !Error!                     *")
+	print("*             Connection to the sever             *")
+	print("*          was not made. Please try again         *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function UserNameError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*            That UserName was already            *")
+	print("*             taken. Please try again             *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function UserError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*             That UserName is Invalid            *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function IntError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*              Internal Server Error              *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function PassError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*              Password was Invalid               *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function DiskError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*              No Disk was Inserted               *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function ValidDiskError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*              The Disk is not valid              *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function TransferError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*           Transfer Was not Successful           *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function Login()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*            UserName:                |           *")
+  print("*              |Type /exit to leave|              *")
+  print("***************************************************")
+	term.setCursorPos(23,3)
+	UserName = read()
+	if UserName == "/exit" then
+		main()
+	elseif UserName == nil then
+		ConnectError()
+	elseif UserName == "" then
+		ConnectError()
+	else
+				sleep(1)
+				 Login2()
+	end
+end
+
+function Login2()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*            Password:                |           *")
+  print("*              |Type /exit to leave|              *")
+  print("***************************************************")
+	term.setCursorPos(23,3)
+	Password = read("*")
+	if Password == "/exit" then
+		main()
+	elseif Password == nil then
+		ConnectError()
+	elseif Password == "" then
+		ConnectError()
+	else
+				sleep(1)
+				 Login3()
+	end
+end
+
+function Login3()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*                 Logging In...                   *")
+  print("*                  Please Wait                    *")
+  print("***************************************************")
+	sleep(3)
+	rednet.send(21,"$$login","$$eco")
+		local a,b = rednet.receive("$$eco",1)
+			if b ~= true then
+				ConnectError()
+			end
+				rednet.send(21,UserName,"$$eco")
+					local a,b = rednet.receive("$$eco",1)
+						if b == "$$invUser" then
+							UserError()
+						elseif b ~= "$$getPass" then
+							ConnectError()
+						end
+							rednet.send(21,Password,"$$eco")
+								local a,b = rednet.receive("$$eco",1)
+									if b == "$$invPass" then
+										PassError()
+									elseif b ~= "$$loginSuccess" then
+										ConnectError()
+									elseif b == "$$loginSuccess" then
+										User = UserName
+										a1,b1 = rednet.receive()
+										--a1,b1 = rednet.receive("$$HM",1)
+											MBalance = b1
+													LoginSucess()	
+									end
+																		
+end
+
+function LoginSucess()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*             Logging In Successful!              *")
+  print("*                  Please Wait                    *")
+  print("***************************************************")
+	sleep(2)
+		Account()
+end
+
+function Account()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                  Your Account                   *")
+  print("*               	                                 *")
+  print("*                    |Deposit|                    *")
+  print("*                 |Check Balance|                 *")
+  print("*               	                                 *")
+  print("*               	      |Exit|                     *")
+  print("***************************************************")
+     local event, AccountButton, x, y = os.pullEvent("mouse_click")
+      if x >= 22 and x <= 30 and y == 4 then
+        Deposit()
+      elseif x >= 19 and x <= 33 and y == 5 then
+        BalanceDesplay()
+	  elseif x >= 24 and x <= 29 and y == 7 then
+        main()
+      else
+        Account()
+      end
+
+end
+
+			
+function BalanceDesplay()						
+	if MBalance == nil then
+		ConnectError()
+	else
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                   Your Account                  *")
+  print("*   (Account will only update upon re-logging)	   *")
+  print("*               	                                 *")
+  print("   |Balance:"..tostring(MBalance).."|                     ")
+  print("*               	                                 *")
+  print("*               	    |Exit|                       *")
+  print("***************************************************")
+	local event, AccountBButton, x, y = os.pullEvent("mouse_click")
+      if x >= 22 and x <= 27 and y == 7 then
+        Account()
+	  else
+		BalanceDesplay()
+	  end
+	end
+end
+
+function Deposit()						
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                     Deposit                     *")
+  print("*               	                                 *")
+  print("*             Please Insert Valid Disk            *")
+  print("*               	                                 *")
+  print("*               	  |Confirm Disk|                 *")
+  print("*               	      |Exit|                     *")
+  print("***************************************************")
+	local event, AccountBButton, x, y = os.pullEvent("mouse_click")
+      if x >= 22 and x <= 27 and y == 7 then
+        Account()
+	  elseif x >= 18 and x <= 31 and y == 6 then
+			if fs.exists("disk") then
+				ScanDisk()
+			else
+				DiskError()
+			end
+	  else
+		Deposit()
+	  end
+end
+
+function ScanDisk()						
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                     Deposit                     *")
+  print("*               	  Scanning Disk...               *")
+  print("*               	    Please wait                  *")
+  print("***************************************************")
+	if not fs.exists("disk/code") then
+		ValidDiskError()
+	else
+		local new = fs.open("disk/code",'r')
+			DiskCode = tostring(new.readAll())
+			new.close()
+			if DiskCode == nil then
+				ValidDiskError()
+			elseif DiskCode == "" then
+				ValidDiskError()
+			else
+			rednet.send(21,"$$checkCode","$$eco")
+				local a,b = rednet.receive("$$eco",1)
+					if b == true then
+						rednet.send(21,DiskCode,"$$eco")
+							local a,b = rednet.receive("$$eco",1)
+								if b == "$$falseDisk" then
+									ValidDiskError()
+								elseif b == "$$trueDisk" then
+									sleep(3)
+									ValidDisk()
+								end
+					end
+			end
+	end
+								
+end
+
+function ValidDisk()	
+term.clear()
+term.setCursorPos(1,1)
+	rednet.send(21,"$$sendMoney","$$eco")
+		local a,b = rednet.receive("$$eco",1)
+					if b == true then
+						rednet.send(21,User,"$$eco")
+							local a,b = rednet.receive("$$eco",1)
+						if b ~= "$$transferDone" then
+							TransferError()
+						else
+							rednet.send(21,DiskCode,"$$eco")
+								local a,b = rednet.receive("$$eco",1)
+									if b == "$$codeGone" then	
+										MoneyAdded()
+			end
+		end
+	end
+end
+
+							
+function MoneyAdded()
+  print("***************************************************")
+  print("*                     Deposit                     *")
+  print("*               Money Has been added              *")
+  print("*                 to your account!                *")
+  print("***************************************************")
+sleep(3)
+Account()
+end
+
+main()

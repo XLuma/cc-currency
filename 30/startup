@@ -1,0 +1,397 @@
+rednet.open("back")
+User = nil
+--Name your Items--
+Item1 = "Diamond"
+Item2 = "Saddle"	
+Item3 = "Record(random)"
+--Change Your Stock--
+Item1A = 0
+Item2A = 0	
+Item3A = 0	
+--Change the price--
+Item1C = 100
+Item2C = 100	
+Item3C = 100
+--Set your item sending computers ids here--
+ItemTr1 = 31
+ItemTr2 = 32
+ItemTr3 = 33
+--------------------
+ItemSelector = 0	
+
+function main()
+term.clear()
+  ScreenW,ScreenH = term.getSize()
+  UserName = ""
+  Password = ""
+  term.setBackgroundColor(colors.gray)
+  print("***************************************************")
+  print("*                                                 *")
+  print("*              Welcome to the Store               *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                    |Purchase|                   *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*                                                 *")
+  print("*           |U.I. Designed by Nickireda|          *")
+  print("***************************************************")
+    local event, MainButton, x, y = os.pullEvent("mouse_click")
+      if x >= 22 and x <= 31 and y == 8 then
+        Login()
+      else
+        main()
+      end
+end
+
+
+function ConnectError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                	    !Error!                     *")
+	print("*             Connection to the sever             *")
+	print("*          was not made. Please try again         *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+
+function UserError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*             That UserName is Invalid            *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function IntError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*              Internal Server Error              *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function PassError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*              Password was Invalid               *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+
+function TransferError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*           Transfer Was not Successful           *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			main()
+end
+
+function StockError()
+term.clear()
+term.setCursorPos(1,1)
+	print("***************************************************")
+	print("*                   	 !Error!                     *")
+	print("*       That Item is not currently in stock       *")
+	print("*                Please try again                 *")
+	print("***************************************************")
+		sleep(3)
+			Deposit()
+end
+
+function Login()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*            UserName:                |           *")
+  print("*              |Type /exit to leave|              *")
+  print("***************************************************")
+	term.setCursorPos(23,3)
+	UserName = read()
+	if UserName == "/exit" then
+		main()
+	elseif UserName == nil then
+		ConnectError()
+	elseif UserName == "" then
+		ConnectError()
+	else
+				sleep(1)
+				 Login2()
+	end
+end
+
+function Login2()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*            Password:                |           *")
+  print("*              |Type /exit to leave|              *")
+  print("***************************************************")
+	term.setCursorPos(23,3)
+	Password = read("*")
+	if Password == "/exit" then
+		main()
+	elseif Password == nil then
+		ConnectError()
+	elseif Password == "" then
+		ConnectError()
+	else
+				sleep(1)
+				 Login3()
+	end
+end
+
+function Login3()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*                 Logging In...                   *")
+  print("*                  Please Wait                    *")
+  print("***************************************************")
+	sleep(3)
+	rednet.send(21,"$$login","$$eco")
+		local a,b = rednet.receive("$$eco",1)
+			if b ~= true then
+				ConnectError()
+			end
+				rednet.send(21,UserName,"$$eco")
+					local a,b = rednet.receive("$$eco",1)
+						if b == "$$invUser" then
+							UserError()
+						elseif b ~= "$$getPass" then
+							ConnectError()
+						end
+							rednet.send(21,Password,"$$eco")
+								local a,b = rednet.receive("$$eco",1)
+									if b == "$$invPass" then
+										PassError()
+									elseif b ~= "$$loginSuccess" then
+										ConnectError()
+									elseif b == "$$loginSuccess" then
+										User = UserName
+										a1,b1 = rednet.receive()
+										--a1,b1 = rednet.receive("$$HM",1)
+											MBalance = b1
+													LoginSucess()	
+									end
+																		
+end
+
+function LoginSucess()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*              Log In to an Account               *")
+  print("*             Logging In Successful!              *")
+  print("*                  Please Wait                    *")
+  print("***************************************************")
+	sleep(2)
+		Account()
+end
+
+function Account()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                   Purchasing                    *")
+  print("*                                                 *")
+  print("   |Balance:"..tostring(MBalance).."|                     ")
+  print("*                                                 *")
+  print("*                 |Items For Sale|                *")
+  print("*               	                                 *")
+  print("*               	      |Exit|                     *")
+  print("***************************************************")
+     local event, AccountButton, x, y = os.pullEvent("mouse_click")
+      if x >= 19 and x <= 34 and y == 6 then
+        Deposit()
+	  elseif x >= 24 and x <= 29 and y == 8 then
+        main()
+      else
+        Account()
+      end
+
+end
+
+function Deposit()	
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                  Items For Sale                 *")
+  print("* (Click an item number to Select it)             *")
+  print("  1)"..Item1.." Price: "..Item1C)
+  print("  2)"..Item2.." Price: "..Item2C)
+  print("  3)"..Item3.." Price: "..Item3C)
+  print("*               	                                 *")
+  print("*               	|Confirm Purchase|               *")
+  print("*               	      |Exit|                     *")
+  print("***************************************************")
+	local event, AccountBButton, x, y = os.pullEvent("mouse_click")
+      if x >= 24 and x <= 27 and y == 9 then
+        Account()
+	  elseif x >= 3 and x <= 4 and y == 4 then
+		ItemSelector = 1
+		Deposit()
+	  elseif x >= 3 and x <= 4 and y == 5 then
+		ItemSelector = 2
+		Deposit()
+	  elseif x >= 3 and x <= 4 and y == 6 then
+		ItemSelector = 3
+		Deposit()
+	  elseif x >= 18 and x <= 35 and y == 8 then
+		if ItemSelector > 0 then
+		Checkout()
+		else
+		Deposit()
+		end
+	  else
+		Deposit()
+	  end
+end
+
+function Checkout()
+rednet.send(tonumber(ItemTr2),"$$Stock","$$Stock")
+local a,b = rednet.receive("$$Stock",1)
+	if b == "Item2Stock1" then
+		Item2A = 1
+	else
+		Item2A = 0
+	end
+rednet.send(tonumber(ItemTr3),"$$Stock","$$Stock")
+local a,b = rednet.receive("$$Stock",1)
+	if b == "Item3Stock1" then
+		Item3A = 1
+	else
+		Item3A = 0
+	end
+rednet.send(tonumber(ItemTr1),"$$Stock","$$Stock")
+local a,b = rednet.receive("$$Stock",1)
+	if b == "Item1Stock1" then
+		Item1A = 1
+	else
+		Item1A = 0
+	end	
+SelectedItem = 0
+	if ItemSelector == 1 then
+		SelectedItem = Item1
+		Price = Item1C
+		Mach = 1
+		if Item1A < 1 then
+			StockError()
+		end
+	elseif ItemSelector == 2 then
+		SelectedItem = Item2
+		Price = Item2C
+		Mach = 2
+		if Item2A < 1 then
+			StockError()
+		end
+	elseif ItemSelector == 3 then
+		SelectedItem = Item3
+		Price = Item3C
+		Mach = 3
+		if Item3A < 1 then
+			StockError()
+		end
+	end
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                     Checkout                    *")
+  print("  Are you sure you want the "..SelectedItem)
+  print("*               	|Confirm Purchase|               *")
+  print("*               	      |Exit|                     *")
+  print("***************************************************")
+  local event, AccountBButton, x, y = os.pullEvent("mouse_click")
+      if x >= 24 and x <= 27 and y == 5 then
+        Deposit()
+		elseif x >= 18 and x <= 35 and y == 4 then
+        Purchase()
+	 else
+		Checkout()
+	end
+ end
+ 
+ function Purchase()
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                     Checkout                    *")
+  print("*                   Purchasing...                 *")
+  print("*               	    Please wait                  *")
+  print("***************************************************")
+  rednet.send(21,"$$buyStuff","$$eco")
+				local a,b = rednet.receive("$$eco",1)
+					if b == "true" then
+						rednet.send(21,UserName,"$$eco")
+							local a,b = rednet.receive("$$eco",1)
+								if b == "$$transferFail" then
+									TransferError()
+								elseif b == "$$transferDone" then
+									sleep(3)
+									rednet.broadcast(Price,"$$eco")
+										local a,b = rednet.receive("$$eco",1)
+											if b ~= "$$transferFail2" then
+												CompletePurchase()
+											else
+												TransferError()
+											end
+								else
+									ConnectError()
+								end
+					else
+						ConnectError()						
+					end
+ end
+ 					
+function CompletePurchase()
+if Mach == 1 then
+	rednet.send(tonumber(ItemTr1),"$$Buy","$$Stock2")
+end
+if Mach == 2 then
+	rednet.send(tonumber(ItemTr2),"$$Buy","$$Stock2")
+end
+if Mach == 3 then
+	rednet.send(tonumber(ItemTr3),"$$Buy","$$Stock2")
+end
+term.clear()
+term.setCursorPos(1,1)
+  print("***************************************************")
+  print("*                    Checkout                     *")
+  print("*               Transaction Complete!             *")
+  print("*             Money has been transferred          *")
+  print("***************************************************")
+sleep(3)
+
+Deposit()
+end
+
+main()
+ 

@@ -1,0 +1,119 @@
+--16
+rednet.open("top")
+var = ""
+function writeTo()
+	if fs.exists("disk") then
+		shell.run("copy tmp disk/code")
+		
+		local new = fs.open("disk/code","w")
+		new.write(var)
+		new.close()
+		shell.run("label set right 100OB")
+		 rednet.send(15,"go","$$ecoMach1")
+
+		 sleep(0.1)
+  end
+end
+function check()
+	sleep(1)
+	if fs.exists("disk") then
+		rand()
+		rednet.send(21,"$$newCode","$$eco")
+		a,b = rednet.receive("$$eco",1)
+		if b ~= true then 
+
+  else
+			rednet.send(21,var,"$$eco")
+			local a,b = rednet.receive("$$eco",1)
+			if b == "$$exists" then 
+				
+	
+			elseif b == "$$true" then
+				writeTo()
+			end
+		end
+	end
+check()
+end
+function rand()
+
+var = ""
+	for i = 1,128,1 do
+		local dig = math.random(36)
+		
+		if dig == 1 then
+			var = var.."a"
+		elseif dig == 2 then
+			var = var.."b"
+		elseif dig == 3 then
+			var = var.."c"
+		elseif dig == 4 then
+			var = var.."d"
+		elseif dig == 5 then
+			var = var.."e"
+		elseif dig == 6 then
+			var = var.."f"
+		elseif dig == 7 then
+			var = var.."g"
+		elseif dig == 8 then
+			var = var.."h"
+		elseif dig == 9 then
+			var = var.."i"
+		elseif dig == 10 then
+			var = var.."j"
+		elseif dig == 11 then
+			var = var.."k"
+		elseif dig == 12 then
+			var = var.."l"
+		elseif dig == 13 then
+			var = var.."m"
+		elseif dig == 14 then
+			var = var.."n"
+		elseif dig == 15 then
+			var = var.."o"
+		elseif dig == 16 then
+			var = var.."p"
+		elseif dig == 17 then
+			var = var.."q"
+		elseif dig == 18 then
+			var = var.."r"
+		elseif dig == 19 then
+			var = var.."s"
+		elseif dig == 20 then
+			var = var.."t"
+		elseif dig == 21 then
+			var = var.."u"
+		elseif dig == 22 then
+			var = var.."v"
+		elseif dig == 23 then
+			var = var.."w"
+		elseif dig == 24 then
+			var = var.."x"
+		elseif dig == 25 then
+			var = var.."y"
+		elseif dig == 26 then
+			var = var.."z"
+		elseif dig == 27 then
+			var = var.."1"
+		elseif dig == 28 then
+			var = var.."2"
+		elseif dig == 29 then
+			var = var.."3"
+		elseif dig == 30 then
+			var = var.."4"
+		elseif dig == 31 then
+			var = var.."5"
+		elseif dig == 32 then
+			var = var.."6"
+		elseif dig == 33 then
+			var = var.."7"
+		elseif dig == 34 then
+			var = var.."8"
+		elseif dig == 35 then
+			var = var.."9"
+		elseif dig == 36 then
+			var = var.."0"
+		end
+	end
+end
+check()

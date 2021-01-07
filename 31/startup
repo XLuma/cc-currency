@@ -1,0 +1,18 @@
+shell.run("bg startup2")
+function Main()
+	sleep(0.1)
+		rs.setOutput("bottom",true)
+			a, b = rednet.receive("$$Stock")
+			print("0")
+			if b == "$$Stock" then
+				if (redstone.getInput("front")) then
+					rednet.send(30,"Item1Stock1","$$Stock")
+					print("1")
+				else
+					rednet.send(30,"Item1Stock0","$$Stock")
+					print("2")
+				end
+			end
+	Main()
+end
+Main()

@@ -1,0 +1,19 @@
+Bank{
+10-ATM
+19-Piston Control
+17-Dispenser Control (Hopper)
+15-Written Disk Taker
+16-Disk Writter
+}
+
+Main{
+21-Main Server
+23-Purchase/Account Tracker
+}
+
+Shop{
+30-Shop Terminal
+32-Shop Item 2
+33-Shop Item 3
+31-Shop Item 1
+}
